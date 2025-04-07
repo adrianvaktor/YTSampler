@@ -380,9 +380,6 @@ function playAudio( pad ) {
 const SAMPLER = new Sampler()
 
 
-
-
-
 function checkAudioSourcesLength(){
     return SAMPLER.AudioSources.length
 }
