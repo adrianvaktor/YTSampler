@@ -6,7 +6,7 @@ const mobileWarning = document.getElementById('mobileWarning')
 
 
 if (isMobile) {
-    mobileWarning.classList.add('disable')
+    mobileWarning.classList.remove('disable')
 }
 
 
