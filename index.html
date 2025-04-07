@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sampler Interface</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>    
+      <div class="modal-back" id="modal-back"></div>
+      <div class="modal" id="modal">
+        <div class="modal-header">
+            YouTube Loader
+        </div>
+        <div class="modal-body">
+            <div class="input-group">
+                <input type="text" id="youtubeUrl" placeholder="Enter YouTube URL" >
+                <button onclick="submitUrl()" id="load-btn">Load</button>
+            </div>
+            <div class="content-area" id="content-area">
+                <div class="content-placeholder">Audios will appear here</div>
+            </div>
+        </div>
+    </div>
+    <div class="app-container">
+      <div id="triggerLib"></div>
+      <div class="waveform-container">
+        <div id="waveform"></div>
+      </div>
+
+      <div class="sampler-container">
+        <div class="pads">
+          <!-- Example pads -->
+          <div class="pad regular" id="pad0"></div>
+          <div class="pad regular" id="pad1"></div>
+          <div class="pad regular" id="pad2"></div>
+          <div class="pad regular" id="pad3"></div>
+          <div class="pad regular" id="pad4"></div>
+          <div class="pad regular" id="pad5"></div>
+          <div class="pad regular" id="pad6"></div>
+          <div class="pad regular" id="pad7"></div>
+          <div class="pad regular" id="pad8"></div>
+          <div class="pad regular" id="pad9"></div>
+          <div class="pad regular" id="pad10"></div>
+          <div class="pad regular" id="pad11"></div>
+          <div class="pad regular" id="pad12"></div>
+          <div class="pad regular" id="pad13"></div>
+          <div class="pad regular" id="pad14"></div>
+          <div class="pad regular" id="pad15"></div>
+
+          <div class="pad shift disable" id="pad0_shift"></div>
+          <div class="pad shift disable" id="pad1_shift"></div>
+          <div class="pad shift disable" id="pad2_shift"></div>
+          <div class="pad shift disable" id="pad3_shift"></div>
+          <div class="pad shift disable" id="pad4_shift"></div>
+          <div class="pad shift disable" id="pad5_shift"></div>
+          <div class="pad shift disable" id="pad6_shift"></div>
+          <div class="pad shift disable" id="pad7_shift"></div>
+          <div class="pad shift disable" id="pad8_shift"></div>
+          <div class="pad shift disable" id="pad9_shift"></div>
+          <div class="pad shift disable" id="pad10_shift"></div>
+          <div class="pad shift disable" id="pad11_shift"></div>
+          <div class="pad shift disable" id="pad12_shift"></div>
+          <div class="pad shift disable" id="pad13_shift"></div>
+          <div class="pad shift disable" id="pad14_shift"></div>
+          <div class="pad shift disable" id="pad15_shift"></div>
+
+        </div>
+        <div class="side-container">
+          <!-- Waveform area with fixed height -->
+
+
+          <div class="controls">
+            <div class="sample-controls" style="flex-direction: column;">
+              <div>
+                Sample
+              </div>
+              <div>
+                <button class="control-btn" id="play-btn">Play</button>
+                <button class="control-btn" id="stop-all-btn">Stop</button>
+                
+              </div>
+              <div>
+                <button class="control-btn loop" id="loop-btn">Loop</button>
+                <button class="control-btn reset" id="reset-btn">Reset</button>
+              </div>
+
+            </div>
+            <div class="sequence-controls" style="flex-direction: column;">
+              <div > Sequence </div>
+              <button class="control-btn" id="play-sequence-btn">Play</button>
+              <button class="control-btn" id="stop-sequence-all-btn">Stop</button>
+            </div>
+          </div>
+
+          <div class="sequence-container">
+            
+            <div class="step-sequencer">
+              <div class="step" id="step_0_0"></div>
+              <div class="step" id="step_0_1"></div>
+              <div class="step" id="step_0_2"></div>
+              <div class="step" id="step_0_3"></div>
+              <div class="step" id="step_0_4"></div>
+              <div class="step" id="step_0_5"></div>
+              <div class="step" id="step_0_6"></div>
+              <div class="step" id="step_0_7"></div>
+              <div class="step" id="step_0_8"></div>
+              <div class="step" id="step_0_9"></div>
+              <div class="step" id="step_0_10"></div>
+              <div class="step" id="step_0_11"></div>
+              <div class="step" id="step_0_12"></div>
+              <div class="step" id="step_0_13"></div>
+              <div class="step" id="step_0_14"></div>
+              <div class="step" id="step_0_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div> 
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+            <div class="step-sequencer">
+              <div class="step" id="step_1_0"></div>
+              <div class="step" id="step_1_1"></div>
+              <div class="step" id="step_1_2"></div>
+              <div class="step" id="step_1_3"></div>
+              <div class="step" id="step_1_4"></div>
+              <div class="step" id="step_1_5"></div>
+              <div class="step" id="step_1_6"></div>
+              <div class="step" id="step_1_7"></div>
+              <div class="step" id="step_1_8"></div>
+              <div class="step" id="step_1_9"></div>
+              <div class="step" id="step_1_10"></div>
+              <div class="step" id="step_1_11"></div>
+              <div class="step" id="step_1_12"></div>
+              <div class="step" id="step_1_13"></div>
+              <div class="step" id="step_1_14"></div>
+              <div class="step" id="step_1_15"></div>
+            </div>
+          </div>
+          <!-- Step sequencer adjusted to fit within the container -->
+
+
+          <!-- <h1>Spear Video Sampler</h1> -->
+          <!-- <div>
+            <button id="stop">Load Project Folder</button>
+            <button id="save-project-btn">Save Project Folder</button>
+          </div> -->
+          <!-- <div class="input-area">
+            <input type="text" id="youtubeUrl" placeholder="Enter YouTube URL" style="width: 300px;" />
+            <button onclick="submitUrl()" id="download-btn">Download</button>
+          </div> -->
+          <div id="progress-bar"><div id="progress"></div></div>
+          <ul id="downloaded-files"></ul>
+        </div>
+      </div>
+    </div>
+    
+    <script src="https://unpkg.com/wavesurfer.js@6.6.2/dist/wavesurfer.min.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js@6.6.2/dist/plugin/wavesurfer.regions.min.js"></script>
+
+    <script src="sampler_logic.js"></script>
+    <script src="ytdl.js" ></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script src="background.js"></script>
+
+  </body>
+</html>
+
+
+
+
+
