@@ -11,6 +11,9 @@ const modal = document.getElementById( 'modal' )
 const modalBack = document.getElementById( 'modal-back' )
 const contentArea = document.getElementById( 'content-area' )
 
+const playSequenceBtn = document.getElementById( 'play-sequence-btn' )
+const stopSequenceBtn = document.getElementById( 'stop-sequence-all-btn' )
+
 const loopButton = document.getElementById( 'loop-btn' )
 
 loopButton.addEventListener( 'click', () => {
@@ -25,8 +28,6 @@ loopButton.addEventListener( 'click', () => {
 let wavesurfer                  = null;    // WaveSurfer instance
 let currentRegion               = null;  // Current WaveSurfer region
 let currentWaveformUrl          = null;    // Current waveform URL
-
-
 
 let isFileModalOpen             = false;
 let lastPadSelected             = false;
@@ -87,12 +88,13 @@ class Pad {
     constructor( id ){
         this.id                 = id;
         this.domElement         = document.getElementById( `pad${this.id}` );
-        this.shiftDomElement    = document.getElementById( `pad0_shift`);
+        this.shiftDomElement    = document.getElementById( `pad${this.id}_shift`);
         this.playbackSpeed      = 1;
         this.loop               = false;
         this.trigger;
         this.thumbnail;
         this.title;
+        this.keyTrigger;
     }
 
     setElement( AudioSource ){
@@ -100,20 +102,18 @@ class Pad {
         this.thumbnail = AudioSource.thumbnail;
         this.title = AudioSource.title;
 
-        console.log(
-            this.domElement, this.shiftDomElement
-        )
-
         this.domElement.style.backgroundImage = `url(${this.thumbnail})`;
         this.domElement.style.backgroundSize = 'cover';   // Optional: Makes the image cover the entire div
         this.domElement.style.backgroundPosition = 'center'; // Optional: Centers the background image
         this.domElement.style.backgroundRepeat = 'no-repeat'; // Optional: Prevents the image from repeating
         
-        console.log(this.shiftDomElement)
         this.shiftDomElement.style.backgroundImage = `url(${this.thumbnail})`;
         this.shiftDomElement.style.backgroundSize = 'cover';   // Optional: Makes the image cover the entire div
         this.shiftDomElement.style.backgroundPosition = 'center'; // Optional: Centers the background image
         this.shiftDomElement.style.backgroundRepeat = 'no-repeat'; // Optional: Prevents the image from repeating
+        this.shiftDomElement.style.backgroundColor = 'rgba(255,255,255,0.2);'; // Optional: Centers the background image
+        this.shiftDomElement.style.backgroundBlendMode = 'lighten;'; // Optional: Prevents the image from repeating
+
     }
 
     setLoop( state ){
@@ -124,13 +124,49 @@ class Pad {
 
 }
 
+class Step {
+    constructor( row, col, pad ){
+        this.id                 = [row, col];
+        this.on                 = false;
+        this.pad                = pad;
+        this.domElement         = document.getElementById( `step_${row}_${col}` );
+        this.init();
+    }
 
+    init(){
+        const thisCallback = this;
+        this.domElement.addEventListener('click', ()=> {
+            this.setOn()
+        })
+    }
 
-class Sequence {
-    constructor(){
-        this.values;
+    setOn(){
+        this.on = !this.on;
+        if(this.on){
+            this.domElement.classList.add('step-on') 
+        }else{
+            this.domElement.classList.remove('step-on') 
+        }
+    }
+    setPlay( state ){
+        if(state){
+            this.domElement.classList.add('step-playhead') 
+            if(this.on){
+                playAudio(this.pad)
+            }
+        }else{
+            this.domElement.classList.remove('step-playhead') 
+        }
     }
 }
+
+
+
+// class Sequence {
+//     constructor(){
+//         this.values;
+//     }
+// }
 
 class Sampler {
     constructor(){
@@ -162,6 +198,13 @@ class Sampler {
 
         this.padArray           = [];
         this.keyTriggers        = [];
+
+        this.stepsMatrix        = [];
+
+        this.isPlayingSequence  = false;
+        this.sequencePosition   = 0;
+        this.sequenceInterval;
+        this.sequenceTempo      = this.calculateTempoMillisecondsFromBPM( 120 )
 
 
         this.sequences;
@@ -212,12 +255,30 @@ class Sampler {
         for( let i = 0 ; i < 16; i++ ){
             this.padArray.push(this[`pad_${i}`]);
             this.keyTriggers[keyTrigger_Keys[i]] = this[`pad_${i}`]
+            this[`pad_${i}`].keyTrigger = keyTrigger_Keys[i]
         };
 
-        
-        this.setPlaying( false )
 
-        console.log(this.keyTriggers)
+        let steps = document.getElementsByClassName('step')
+        steps = [].slice().slice.call(steps);
+
+        steps.forEach((element, i) => {
+
+            const row = Math.floor(i / 16)
+            const col = i % 16
+            if(col == 0 ){
+                this.stepsMatrix.push([])
+            }
+
+            const step = new Step( row, col, this.padArray[row] )
+            this.stepsMatrix[row].push(step)
+
+        });
+
+        console.log(this.stepsMatrix)
+
+
+        this.setPlaying( false )
     }
 
     setPlaying( state ){
@@ -267,6 +328,60 @@ class Sampler {
         }
         
     }
+    setKeyTrigger( pad ){
+        document.removeEventListener( 'keydown', handleKeyDown )
+        const callback_this = this
+        function callback (e) {
+            callback_this.keyTriggers[e.code] = pad
+            delete callback_this.keyTriggers[pad.keyTrigger]
+            pad.keyTrigger = e.code;
+            document.removeEventListener( 'keydown', callback )
+            document.addEventListener( 'keydown', handleKeyDown )
+
+        }
+        
+        document.addEventListener( 'keydown', callback )
+        setTimeout( () =>  {
+            document.removeEventListener( 'keydown', callback )
+            document.removeEventListener( 'keydown', handleKeyDown )
+            document.addEventListener( 'keydown', handleKeyDown )
+
+        }, 5000)
+
+    }
+
+    calculateTempoMillisecondsFromBPM( bpm ){
+        return 1000 / (bpm / 60) 
+    }
+
+    setPlayingSequence( state ){
+        if(this.isPlayingSequence == state) return;
+        this.isPlayingSequence = state;
+
+        if( !state ){
+            endPlayer()
+            clearInterval(this.sequencePlayingInterval)
+            this.sequencePosition = 0;
+            return
+        }
+
+        const thisCallback = this
+        const advanceMentInterval = this.sequenceTempo / 4
+
+        this.sequencePlayingInterval = setInterval(
+            () => {
+                thisCallback.stepsMatrix.forEach(row => {
+                    const staticValue = thisCallback.sequencePosition
+                    row[staticValue].setPlay( true );
+                    setTimeout( () => {
+                        row[staticValue].setPlay( false );
+                    }, advanceMentInterval )
+                })
+                thisCallback.sequencePosition = (thisCallback.sequencePosition + 1) % 16
+
+            }, advanceMentInterval
+        )
+    }
 }
 
 function stopPlayerIfPlaying(){
@@ -275,6 +390,7 @@ function stopPlayerIfPlaying(){
 }
 
 function endPlayer () {
+    if(SAMPLER.isPlayingSequence) return SAMPLER.setPlayingSequence( false )
     Object.keys( SAMPLER.audiosPlaying ).forEach( (key) => {
         if(SAMPLER.audiosPlaying[key]){
             SAMPLER.audiosPlaying[key].disconnect()
@@ -424,39 +540,40 @@ function generateTriggers() {
   }
   
 
+  function handleKeyDown ( e ) {
 
-  document.addEventListener( 'keydown', (e) => {
-
-    if(SAMPLER.keyTriggers[e.code]){
-        SAMPLER.setCurrentPad(SAMPLER.keyTriggers[e.code])
-        playAudio( SAMPLER.keyTriggers[e.code] )
-        return 
-    }
-
-    switch(e.code){
-        case 'Space':
-            if(SAMPLER.isPlaying){
-                endPlayer()
-            }else{
-                playAudio(lastPadSelected)
-                startPlayer()
-            }
-            break;
-        case 'KeyL':
-            if(lastPadSelected?.trigger){
-                if( !lastPadSelected.loop) {
-                    lastPadSelected.setLoop( true )
+        if(SAMPLER.keyTriggers[e.code]){
+            SAMPLER.setCurrentPad(SAMPLER.keyTriggers[e.code])
+            playAudio( SAMPLER.keyTriggers[e.code] )
+            return 
+        }
+    
+        switch(e.code){
+            case 'Space':
+                if(SAMPLER.isPlaying || SAMPLER.isPlayingSequence){
+                    endPlayer()
                 }else{
-                    lastPadSelected.setLoop( false ) 
+                    playAudio(lastPadSelected)
+                    startPlayer()
                 }
-            }
-            break;
-        case 'ShiftLeft':
-            isShift = true
-            SAMPLER.setShift( true )
+                break;
+            case 'KeyL':
+                if(lastPadSelected?.trigger){
+                    if( !lastPadSelected.loop) {
+                        lastPadSelected.setLoop( true )
+                    }else{
+                        lastPadSelected.setLoop( false ) 
+                    }
+                }
+                break;
+            case 'ShiftLeft':
+                isShift = true
+                SAMPLER.setShift( true )
+    
+        }
+      }
 
-    }
-  } )
+  document.addEventListener( 'keydown', handleKeyDown )
 
   document.addEventListener( 'keyup', (e) => {
 
@@ -602,5 +719,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // });
   });
 
+  document.getElementById("setKey").addEventListener( "click", (e) => {
+    let id = 0;
+    SAMPLER.setKeyTrigger(SAMPLER.padArray[id])
+
+
+  } )
+
+playSequenceBtn.addEventListener( 'click', ( ) => {
+    SAMPLER.setPlayingSequence( true )
+ })
+stopSequenceBtn.addEventListener( 'click', ( ) => {
+    SAMPLER.setPlayingSequence( false )
+ })
   
   

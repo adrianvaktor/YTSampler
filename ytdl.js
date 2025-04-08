@@ -9,9 +9,6 @@ async function fetchMetadata( videoUrl ) {
   console.log(metadataRes)
   const metadata = await metadataRes.json();
 
-  // console.log(metadata.title);       // video title
-  // console.log(metadata.thumbnail);   // thumbnail URL
-  // console.log(metadata.streamUrl);   // endpoint to fetch the audio stream
   return metadata;
   }
 
